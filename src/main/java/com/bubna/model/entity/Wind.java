@@ -1,10 +1,11 @@
 package com.bubna.model.entity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "winds")
-public class Wind {
+public class Wind implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "wind_id")

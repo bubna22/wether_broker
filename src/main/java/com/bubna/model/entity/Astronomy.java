@@ -1,10 +1,11 @@
 package com.bubna.model.entity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 @Entity
-@Table(name = "astronomy_data")
-public class Astronomy {
+@Table(name = "astronomy")
+public class Astronomy implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "astro_id")

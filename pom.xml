@@ -24,8 +24,187 @@
       <artifactId>persistence-api</artifactId>
       <version>1.0.2</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.activemq</groupId>
+      <artifactId>activemq-broker</artifactId>
+      <version>RELEASE</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>RELEASE</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-jms</artifactId>
+      <version>RELEASE</version>
+    </dependency>
+
+
+    <dependency>
+      <groupId>org.apache.activemq</groupId>
+      <artifactId>activemq-spring</artifactId>
+      <version>5.15.0</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.springframework/spring-web -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-web</artifactId>
+      <version>RELEASE</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.springframework/spring-webmvc -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-webmvc</artifactId>
+      <version>RELEASE</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.tinylog</groupId>
+      <artifactId>tinylog</artifactId>
+      <version>1.2</version>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>jstl</artifactId>
+      <version>1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>9.3-1102-jdbc41</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.5</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.tomcat</groupId>
+      <artifactId>tomcat-servlet-api</artifactId>
+      <version>7.0.47</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <version>4.3.10.RELEASE</version>
+  </dependency>
+
   </dependencies>
+
+
+
   <build>
+    <plugins>
+      <plugin>
+        <groupId>io.fabric8</groupId>
+        <artifactId>docker-maven-plugin</artifactId>
+        <version>0.21.0</version>
+        <configuration>
+          <images>
+            <image>
+              <alias>bubna_docker_tomcat</alias>
+              <name>tomcat</name>
+              <build>
+                <dockerFileDir>${project.basedir}/tomcat_docker</dockerFileDir>
+              </build>
+              <run>
+                <namingStrategy>
+                  alias
+                </namingStrategy>
+                <network>
+                  <mode>custom</mode>
+                  <name>skynet</name>
+                </network>
+              </run>
+            </image>
+            <image>
+              <name>postgresql</name>
+              <alias>bubna_docker_postgresql</alias>
+              <build>
+                <dockerFileDir>${project.basedir}/postgresql_docker</dockerFileDir>
+              </build>
+              <run>
+                <namingStrategy>
+                  alias
+                </namingStrategy>
+                <ports>
+                  <port>host.port:5432</port>
+                  <port>5432:5432</port>
+                </ports><network>
+                <mode>custom</mode>
+                <name>skynet</name>
+              </network>
+              </run>
+            </image>
+          </images>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>3.0.0</version><configuration>
+        <failOnMissingWebXml>false</failOnMissingWebXml>
+        <archive><manifest><addClasspath>true</addClasspath>
+          <classpathPrefix>lib/</classpathPrefix>
+        </manifest></archive>
+        <webResources>
+          <resource><!-- this is relative to the pom.xml directory -->
+      <directory>${project.basedir}/src/main/resources
+      </directory>
+          </resource>
+        </webResources>
+        <warName>wether_broker</warName>
+      </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.tomcat.maven</groupId>
+        <artifactId>tomcat7-maven-plugin</artifactId>
+        <version>2.2</version>
+        <configuration>
+          <url>http://172.18.0.2:8080/manager/text</url>
+          <server>TomcatServer</server>
+          <username>admin</username>
+          <password>password</password>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>sql-maven-plugin</artifactId>
+        <version>1.5</version>
+        <dependencies>
+          <dependency>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>RELEASE</version>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <driver>org.postgresql.Driver</driver>
+          <url>jdbc:postgresql://172.18.0.3:5432/postgres</url>
+          <username>postgres</username>
+          <password/>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>install</phase>
+            <goals>
+              <goal>execute</goal>
+            </goals>
+            <configuration>
+              <srcFiles>
+                <srcFile>src/main/resources/sql/create_database.sql</srcFile>
+              </srcFiles>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
     <finalName>wether_broker</finalName>
   </build>
 </project>

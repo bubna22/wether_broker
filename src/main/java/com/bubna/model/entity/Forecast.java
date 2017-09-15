@@ -1,10 +1,11 @@
 package com.bubna.model.entity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 @Entity
 @Table(name = "forecasts")
-public class Forecast {
+public class Forecast implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "forecast_id")
@@ -19,7 +20,7 @@ public class Forecast {
     private Integer low;
     @Column(name = "forecast_text")
     private String text;
-    @OneToMany
+    @ManyToOne
     @JoinColumn(name = "forecast_item")
     private Item item;
 }
