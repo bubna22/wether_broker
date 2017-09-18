@@ -8,7 +8,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "queries")
-@JsonIgnoreProperties
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Query implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,7 +17,7 @@ public class Query implements Serializable {
     @Column(name = "query_count")
     private Integer count;
     @Column(name = "query_created")
-    private Date created;
+    private String created;
     @Column(name = "query_lang")
     private String lang;
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -40,11 +40,11 @@ public class Query implements Serializable {
         this.count = count;
     }
 
-    public Date getCreated() {
+    public String getCreated() {
         return created;
     }
 
-    public void setCreated(Date created) {
+    public void setCreated(String created) {
         this.created = created;
     }
 
@@ -63,5 +63,7 @@ public class Query implements Serializable {
     public void setChannel(Channel channel) {
         this.channel = channel;
     }
+
+
 
 }

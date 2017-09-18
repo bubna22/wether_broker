@@ -8,7 +8,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "channels")
-@JsonIgnoreProperties
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Channel implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

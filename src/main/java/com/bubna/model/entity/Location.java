@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "locations")
-@JsonIgnoreProperties
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Location implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

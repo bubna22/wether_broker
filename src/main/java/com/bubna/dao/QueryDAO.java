@@ -34,19 +34,19 @@ public class QueryDAO implements DAO<Query> {
     @Transactional
     public void update() {
         Query inputQuery = (Query) input.get("entity");
-        javax.persistence.Query query = entityManager
-                .createQuery("SELECT q FROM Query q WHERE q.channel.location.city = :location_city", Query.class)
-                .setParameter("location_city", inputQuery.getChannel().getLocation().getCity());
-
-        List<Query> result = query.getResultList();
-        if (result.size() < 1) {
-            entityManager.persist(inputQuery);
-        } else {
-            Query outputQuery = result.get(0);
-            outputQuery.setChannel(inputQuery.getChannel());
-            outputQuery.setCount(inputQuery.getCount());
-            outputQuery.setCreated(inputQuery.getCreated());
-            outputQuery.setLang(inputQuery.getLang());
-        }
+        entityManager.persist(inputQuery);
+//        javax.persistence.Query query = entityManager
+//                .createQuery("SELECT q FROM Query q", Query.class);
+//
+//        List<Query> result = query.getResultList();
+//        if (result.size() < 1) {
+//
+//        } else {
+//            Query outputQuery = result.get(0);
+//            outputQuery.setChannel(inputQuery.getChannel());
+//            outputQuery.setCount(inputQuery.getCount());
+//            outputQuery.setCreated(inputQuery.getCreated());
+//            outputQuery.setLang(inputQuery.getLang());
+//        }
     }
 }

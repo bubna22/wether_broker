@@ -3,17 +3,25 @@ package com.bubna.spring.utils;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jms.annotation.EnableJms;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.listener.DefaultMessageListenerContainer;
 import org.springframework.jms.support.converter.MappingJackson2MessageConverter;
 import org.springframework.jms.support.converter.MessageConverter;
 import org.springframework.jms.support.converter.MessageType;
+import org.springframework.jms.support.destination.DestinationResolver;
+import org.springframework.jms.support.destination.JndiDestinationResolver;
 
+import javax.jms.Destination;
+import javax.jms.JMSException;
+import javax.jms.Session;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 @Configuration
+@EnableJms
 public class WeatherMessagingConfig {
     @Bean
     public ActiveMQConnectionFactory connectionFactory() {
@@ -37,16 +45,28 @@ public class WeatherMessagingConfig {
                 new DefaultJmsListenerContainerFactory();
         factory.setConnectionFactory(connectionFactory());
         factory.setPubSubDomain(true);
-//        factory.setDestinationResolver(destinationResolver());
+        factory.setSubscriptionDurable(true);
         factory.setConcurrency("3-10");
         return factory;
+    }
+
+    @Bean
+    public DefaultMessageListenerContainer defaultMessageListenerContainer() {
+        DefaultMessageListenerContainer dmlc = new DefaultMessageListenerContainer();
+        dmlc.setPubSubDomain(true);
+        dmlc.setConnectionFactory(connectionFactory());
+        dmlc.setConcurrency("3-10");
+        dmlc.setDestinationName("prospring4");
+        dmlc.setSubscriptionDurable(true);
+        // Other configuration here
+        return dmlc;
     }
 
     @Bean
     public JmsTemplate jmsTemplate(){
         JmsTemplate template = new JmsTemplate();
         template.setConnectionFactory(connectionFactory());
-        template.setDefaultDestinationName("MY.TEST.FOO");
+        template.setDefaultDestinationName("prospring4");
         template.setMessageConverter(jacksonJmsMessageConverter());
         template.setPubSubDomain(true);
         return template;

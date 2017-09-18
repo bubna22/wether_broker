@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "atmospheres")
-@JsonIgnoreProperties
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Atmosphere implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,4 +21,44 @@ public class Atmosphere implements Serializable {
     private Integer rising;
     @Column(name = "atmo_visibility")
     private Float visibility;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getHumidity() {
+        return humidity;
+    }
+
+    public void setHumidity(Integer humidity) {
+        this.humidity = humidity;
+    }
+
+    public Float getPressure() {
+        return pressure;
+    }
+
+    public void setPressure(Float pressure) {
+        this.pressure = pressure;
+    }
+
+    public Integer getRising() {
+        return rising;
+    }
+
+    public void setRising(Integer rising) {
+        this.rising = rising;
+    }
+
+    public Float getVisibility() {
+        return visibility;
+    }
+
+    public void setVisibility(Float visibility) {
+        this.visibility = visibility;
+    }
 }
