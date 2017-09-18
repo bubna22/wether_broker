@@ -1,10 +1,13 @@
 package com.bubna.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "units")
+@JsonIgnoreProperties
 public class Units implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

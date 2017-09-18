@@ -1,10 +1,13 @@
 package com.bubna.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "atmospheres")
+@JsonIgnoreProperties
 public class Atmosphere implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

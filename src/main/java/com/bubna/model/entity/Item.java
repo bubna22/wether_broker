@@ -1,5 +1,7 @@
 package com.bubna.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -7,6 +9,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "items")
+@JsonIgnoreProperties
 public class Item implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,10 +25,10 @@ public class Item implements Serializable {
     private String link;
     @Column(name = "item_pub_date")
     private Date pubDate;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "item_condition")
     private Condition condition;
-    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "item", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Forecast> forecasts;
     @Column(name = "item_desc")
     private String description;

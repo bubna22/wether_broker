@@ -1,10 +1,13 @@
 package com.bubna.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 @Entity
 @Table(name = "forecasts")
+@JsonIgnoreProperties
 public class Forecast implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,7 +23,7 @@ public class Forecast implements Serializable {
     private Integer low;
     @Column(name = "forecast_text")
     private String text;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "forecast_item")
     private Item item;
 }

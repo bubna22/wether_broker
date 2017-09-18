@@ -8,6 +8,14 @@ CREATE TABLE queries (
 
 CREATE UNIQUE INDEX query_created_ui ON queries(query_created);
 
+CREATE TABLE units (
+    units_id bigserial PRIMARY KEY,
+    units_distance VARCHAR(1024),
+    units_pressure VARCHAR(1024),
+    units_speed VARCHAR(1024),
+    units_temperature VARCHAR(1024)
+);
+
 CREATE TABLE channels (
     channel_id bigserial PRIMARY KEY,
     channel_units INTEGER,
@@ -76,6 +84,7 @@ CREATE TABLE items (
     item_lat REAL,
     item_long REAL,
     item_link VARCHAR(1024),
+    item_desc VARCHAR(2048),
     item_pub_date TIMESTAMP,
     item_condition INTEGER
 );
