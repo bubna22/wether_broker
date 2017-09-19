@@ -16,13 +16,13 @@ public class WeatherQueryReceiver {
     @Qualifier("queryModel")
     private Model queryModel;
 
-    @JmsListener(destination = "MY.TEST.FOO", subscription = "MY.TEST.FOO")
-    public void receiveMessage(Message<JsonQuery> message) {
+    @JmsListener(destination = "MY.TEST.FOO", containerFactory = "jmsListenerContainerFactory")
+    public void receiveMessage(JsonQuery query) {
         Query inputQuery = new Query();
 //        inputQuery.setChannel(message.getPayload().getJsonResults().getChannel());
-        inputQuery.setLang(message.getPayload().getLang());
-        inputQuery.setCreated(message.getPayload().getCreated());
-        inputQuery.setCount(message.getPayload().getCount());
+        inputQuery.setLang(query.getLang());
+        inputQuery.setCreated(query.getCreated());
+        inputQuery.setCount(query.getCount());
         queryModel.update(inputQuery);
     }
 }

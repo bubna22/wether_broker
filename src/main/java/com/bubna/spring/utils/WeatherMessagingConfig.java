@@ -15,9 +15,7 @@ import org.springframework.jms.support.converter.MessageType;
 import org.springframework.jms.support.destination.DestinationResolver;
 import org.springframework.jms.support.destination.JndiDestinationResolver;
 
-import javax.jms.Destination;
-import javax.jms.JMSException;
-import javax.jms.Session;
+import javax.jms.*;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -42,53 +40,51 @@ public class WeatherMessagingConfig {
     }
 
     @Bean
-    public ActiveMQTopic getTopic() {
+    public ActiveMQTopic getTopic() throws JMSException {
         InitialContext initialContext;
-        ActiveMQTopic topic = null;
+        Topic topic = null;
         try {
             initialContext = new InitialContext();
             Context envContext = (Context) initialContext.lookup("java:comp/env");
-            topic = (ActiveMQTopic) envContext.lookup("jms/topic/MyTopic");
+            final TopicConnectionFactory factory = (TopicConnectionFactory) envContext.lookup("ConnectionFactory");
+            TopicConnection connection = factory.createTopicConnection();
+            connection.start();
+            TopicSession session = connection.createTopicSession(true, Session.AUTO_ACKNOWLEDGE);
+            topic = session.createTopic("MY.TEST.FOO");
         } catch (NamingException e) {
             //TODO: generate runtime exception
             e.printStackTrace();
         }
 
-        return topic;
+        return (ActiveMQTopic) topic;
     }
 
     @Bean
-    @Autowired
-    public DestinationResolver destinationResolver(final ActiveMQTopic topic) {
+    public DestinationResolver destinationResolver() {
         return new DestinationResolver() {
             public Destination resolveDestinationName(Session session, String s, boolean b) throws JMSException {
-                return topic;
+                return getTopic();
             }
         };
     }
 
     @Bean
-    @Autowired
-    public DefaultJmsListenerContainerFactory jmsListenerContainerFactory(final DestinationResolver destinationResolver) {
+    public DefaultJmsListenerContainerFactory jmsListenerContainerFactory() {
         DefaultJmsListenerContainerFactory factory =
                 new DefaultJmsListenerContainerFactory();
         factory.setConnectionFactory(connectionFactory());
         factory.setPubSubDomain(true);
-        factory.setSubscriptionDurable(true);
-        factory.setAutoStartup(true);
-        factory.setSubscriptionShared(true);
-        factory.setDestinationResolver(destinationResolver);
-        factory.setConcurrency("3-10");
         return factory;
     }
 
     @Bean
-    public JmsTemplate jmsTemplate(){
+    public JmsTemplate jmsTemplate(ActiveMQTopic topic) throws JMSException {
         JmsTemplate template = new JmsTemplate();
         template.setConnectionFactory(connectionFactory());
-        template.setDefaultDestinationName("MY.TEST.FOO");
+        template.setDefaultDestination(getTopic());
         template.setMessageConverter(jacksonJmsMessageConverter());
         template.setPubSubDomain(true);
+        template.setDeliveryPersistent(true);
         return template;
     }
 
