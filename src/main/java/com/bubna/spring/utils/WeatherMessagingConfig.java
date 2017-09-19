@@ -1,6 +1,8 @@
 package com.bubna.spring.utils;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.command.ActiveMQTopic;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.annotation.EnableJms;
@@ -40,33 +42,51 @@ public class WeatherMessagingConfig {
     }
 
     @Bean
-    public DefaultJmsListenerContainerFactory jmsListenerContainerFactory() {
+    public ActiveMQTopic getTopic() {
+        InitialContext initialContext;
+        ActiveMQTopic topic = null;
+        try {
+            initialContext = new InitialContext();
+            Context envContext = (Context) initialContext.lookup("java:comp/env");
+            topic = (ActiveMQTopic) envContext.lookup("jms/topic/MyTopic");
+        } catch (NamingException e) {
+            //TODO: generate runtime exception
+            e.printStackTrace();
+        }
+
+        return topic;
+    }
+
+    @Bean
+    @Autowired
+    public DestinationResolver destinationResolver(final ActiveMQTopic topic) {
+        return new DestinationResolver() {
+            public Destination resolveDestinationName(Session session, String s, boolean b) throws JMSException {
+                return topic;
+            }
+        };
+    }
+
+    @Bean
+    @Autowired
+    public DefaultJmsListenerContainerFactory jmsListenerContainerFactory(final DestinationResolver destinationResolver) {
         DefaultJmsListenerContainerFactory factory =
                 new DefaultJmsListenerContainerFactory();
         factory.setConnectionFactory(connectionFactory());
         factory.setPubSubDomain(true);
         factory.setSubscriptionDurable(true);
+        factory.setAutoStartup(true);
+        factory.setSubscriptionShared(true);
+        factory.setDestinationResolver(destinationResolver);
         factory.setConcurrency("3-10");
         return factory;
-    }
-
-    @Bean
-    public DefaultMessageListenerContainer defaultMessageListenerContainer() {
-        DefaultMessageListenerContainer dmlc = new DefaultMessageListenerContainer();
-        dmlc.setPubSubDomain(true);
-        dmlc.setConnectionFactory(connectionFactory());
-        dmlc.setConcurrency("3-10");
-        dmlc.setDestinationName("prospring4");
-        dmlc.setSubscriptionDurable(true);
-        // Other configuration here
-        return dmlc;
     }
 
     @Bean
     public JmsTemplate jmsTemplate(){
         JmsTemplate template = new JmsTemplate();
         template.setConnectionFactory(connectionFactory());
-        template.setDefaultDestinationName("prospring4");
+        template.setDefaultDestinationName("MY.TEST.FOO");
         template.setMessageConverter(jacksonJmsMessageConverter());
         template.setPubSubDomain(true);
         return template;

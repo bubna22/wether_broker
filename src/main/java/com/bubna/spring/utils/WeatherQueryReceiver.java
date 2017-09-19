@@ -9,16 +9,14 @@ import org.springframework.jms.annotation.JmsListener;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
 
-import javax.jms.MessageListener;
-
 @Component
-public class WeatherQueryReceiver implements MessageListener {
+public class WeatherQueryReceiver {
 
     @Autowired
     @Qualifier("queryModel")
     private Model queryModel;
 
-    @JmsListener(destination = "prospring4")
+    @JmsListener(destination = "MY.TEST.FOO", subscription = "MY.TEST.FOO")
     public void receiveMessage(Message<JsonQuery> message) {
         Query inputQuery = new Query();
 //        inputQuery.setChannel(message.getPayload().getJsonResults().getChannel());
@@ -26,9 +24,5 @@ public class WeatherQueryReceiver implements MessageListener {
         inputQuery.setCreated(message.getPayload().getCreated());
         inputQuery.setCount(message.getPayload().getCount());
         queryModel.update(inputQuery);
-    }
-
-    public void onMessage(javax.jms.Message message) {
-
     }
 }

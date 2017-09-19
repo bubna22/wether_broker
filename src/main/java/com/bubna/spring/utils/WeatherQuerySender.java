@@ -19,6 +19,6 @@ public class WeatherQuerySender {
     private JmsTemplate jmsTemplate;
 
     public void sendMessage(final JsonQuery query) {
-        jmsTemplate.convertAndSend("prospring4", query);
+        jmsTemplate.convertAndSend("MY.TEST.FOO", query);
     }
 }
