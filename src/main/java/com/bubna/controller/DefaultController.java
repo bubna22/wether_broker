@@ -8,6 +8,7 @@ import com.bubna.model.entity.json.JsonQuery;
 import com.bubna.spring.jms.WeatherQuerySender;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import org.apache.log4j.Logger;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
@@ -63,4 +64,5 @@ public class DefaultController {
         logger.fatal("cause - " + ex.getCause() + "; message - " + ex.getMessage() + "; stack trace - " + Arrays.toString(ex.getStackTrace()));
         return jme.getPath().get(0).getFieldName() + " invalid";
     }
+
 }
