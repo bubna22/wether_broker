@@ -1,6 +1,9 @@
 package com.bubna.model.entity;
 
+import com.bubna.model.entity.json.Custom2JsonDateDeserializer;
+import com.bubna.model.entity.json.CustomJsonDateDeserializer;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -14,7 +17,9 @@ public class Astronomy implements Serializable {
     @Column(name = "astro_id")
     private Integer id;
     @Column(name = "astro_sunrise")
+    @JsonDeserialize(using = Custom2JsonDateDeserializer.class)
     private Date sunrise;//hh:mm 12 hours
+    @JsonDeserialize(using = Custom2JsonDateDeserializer.class)
     @Column(name = "astro_sunset")
     private Date sunset;//hh:mm 12 hours
 

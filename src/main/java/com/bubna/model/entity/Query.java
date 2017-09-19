@@ -17,7 +17,7 @@ public class Query implements Serializable {
     @Column(name = "query_count")
     private Integer count;
     @Column(name = "query_created")
-    private String created;
+    private Date created;
     @Column(name = "query_lang")
     private String lang;
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -40,11 +40,11 @@ public class Query implements Serializable {
         this.count = count;
     }
 
-    public String getCreated() {
+    public Date getCreated() {
         return created;
     }
 
-    public void setCreated(String created) {
+    public void setCreated(Date created) {
         this.created = created;
     }
 

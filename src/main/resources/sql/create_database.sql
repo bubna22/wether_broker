@@ -67,8 +67,6 @@ CREATE TABLE astronomy (
     astro_sunset TIMESTAMP
 );
 
-CREATE UNIQUE INDEX astro_sunrise_sunset ON astronomy(astro_sunrise, astro_sunset);
-
 CREATE TABLE images (
     image_id bigserial PRIMARY KEY,
     image_title VARCHAR(1024),

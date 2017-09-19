@@ -5,13 +5,9 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
-import org.springframework.jms.listener.DefaultMessageListenerContainer;
 import org.springframework.stereotype.Component;
 
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.ObjectMessage;
-import javax.jms.Session;
+import javax.jms.*;
 
 @Component
 public class WeatherQuerySender {
@@ -22,7 +18,18 @@ public class WeatherQuerySender {
     private static final Logger logger = Logger.getLogger(WeatherQuerySender.class);
 
     public void sendMessage(final JsonQuery query) {
-        logger.warn("sending message - " + query);
-        jmsTemplate.convertAndSend("MY.TEST.FOO", query);
+        MessageCreator creator = new MessageCreator() {
+            public Message createMessage(Session session) {
+                ObjectMessage message = null;
+                try {
+                    message = session.createObjectMessage();
+                    message.setObject(query);
+                } catch (JMSException e) {
+                    logger.error(e);
+                }
+                return message;
+            }
+        };
+        jmsTemplate.send("MY.TEST.FOO", creator);
     }
 }

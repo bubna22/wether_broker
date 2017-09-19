@@ -1,6 +1,9 @@
 package com.bubna.model.entity;
 
+import com.bubna.model.entity.json.Custom1JsonDateDeserializer;
+import com.bubna.model.entity.json.CustomJsonDateDeserializer;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -26,6 +29,7 @@ public class Channel implements Serializable {
     @Column(name = "channel_lang")
     private String language;
     @Column(name = "channel_last_build")
+    @JsonDeserialize(using = Custom1JsonDateDeserializer.class)
     private Date lastBuildDate;
     @Column(name = "channel_ttl")
     private Integer ttl;

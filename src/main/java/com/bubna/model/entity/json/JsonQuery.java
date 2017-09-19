@@ -3,8 +3,10 @@ package com.bubna.model.entity.json;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import java.io.Serializable;
+import java.util.Date;
 
 @JsonRootName(value = "query")
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -12,11 +14,12 @@ public class JsonQuery implements Serializable {
     @JsonProperty("count")
     private Integer count;
     @JsonProperty("created")
-    private String created;
+    @JsonDeserialize(using = CustomJsonDateDeserializer.class)
+    private Date created;
     @JsonProperty("lang")
     private String lang;
-//    @JsonProperty("results")
-//    private JsonResults results;
+    @JsonProperty("results")
+    private JsonResults results;
 
     public Integer getCount() {
         return count;
@@ -26,11 +29,11 @@ public class JsonQuery implements Serializable {
         this.count = count;
     }
 
-    public String getCreated() {
+    public Date getCreated() {
         return created;
     }
 
-    public void setCreated(String created) {
+    public void setCreated(Date created) {
         this.created = created;
     }
 
@@ -42,13 +45,13 @@ public class JsonQuery implements Serializable {
         this.lang = lang;
     }
 
-//    public JsonResults getJsonResults() {
-//        return results;
-//    }
-//
-//    public void setJsonResults(JsonResults results) {
-//        this.results = results;
-//    }
+    public JsonResults getJsonResults() {
+        return results;
+    }
+
+    public void setJsonResults(JsonResults results) {
+        this.results = results;
+    }
 
     @Override
     public String toString() {

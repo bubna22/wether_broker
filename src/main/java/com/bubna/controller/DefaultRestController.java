@@ -4,18 +4,12 @@ import com.bubna.model.Model;
 import com.bubna.model.entity.Channel;
 import com.bubna.model.entity.Location;
 import com.bubna.model.entity.Query;
-import com.bubna.spring.utils.WeatherQuerySender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
-
-import java.net.MalformedURLException;
-import java.net.URL;
 
 @RestController
 public class DefaultRestController {

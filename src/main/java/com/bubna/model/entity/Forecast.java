@@ -1,6 +1,8 @@
 package com.bubna.model.entity;
 
+import com.bubna.model.entity.json.CustomJsonDateDeserializer;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -14,6 +16,7 @@ public class Forecast implements Serializable {
     @Column(name = "forecast_id")
     private Integer code;
     @Column(name = "forecast_date")
+    @JsonDeserialize(using = CustomJsonDateDeserializer.class)
     private Date date;
     @Column(name = "forecast_day")
     private String day;

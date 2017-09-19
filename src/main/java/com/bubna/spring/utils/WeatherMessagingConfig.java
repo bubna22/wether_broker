@@ -35,7 +35,7 @@ public class WeatherMessagingConfig {
             //TODO: generate runtime exception
             e.printStackTrace();
         }
-
+        connectionFactory.setTrustAllPackages(true);
         return connectionFactory;
     }
 
