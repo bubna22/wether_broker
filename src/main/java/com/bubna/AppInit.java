@@ -5,6 +5,7 @@ import com.bubna.dao.DAOConfig;
 import com.bubna.dao.DataSourceConfig;
 import com.bubna.model.ModelConfig;
 import com.bubna.spring.utils.WeatherMessagingConfig;
+import com.bubna.spring.utils.WeatherQueryReceiver;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 public class AppInit extends AbstractAnnotationConfigDispatcherServletInitializer {
@@ -12,6 +13,7 @@ public class AppInit extends AbstractAnnotationConfigDispatcherServletInitialize
     protected Class<?>[] getRootConfigClasses() {
         return new Class<?>[]{
                 WeatherMessagingConfig.class,
+                WeatherQueryReceiver.class,
                 DataSourceConfig.class,
                 DAOConfig.class,
                 ModelConfig.class
