@@ -1,4 +1,4 @@
-package com.bubna.spring.utils;
+package com.bubna.spring.jms;
 
 import com.bubna.model.entity.json.JsonQuery;
 import org.apache.log4j.Logger;

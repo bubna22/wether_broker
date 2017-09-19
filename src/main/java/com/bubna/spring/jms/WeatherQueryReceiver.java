@@ -1,10 +1,9 @@
-package com.bubna.spring.utils;
+package com.bubna.spring.jms;
 
 import com.bubna.model.Model;
 import com.bubna.model.entity.Query;
 import com.bubna.model.entity.json.JsonQuery;
 import org.apache.activemq.command.ActiveMQObjectMessage;
-import org.apache.activemq.command.ActiveMQTextMessage;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

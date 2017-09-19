@@ -33,8 +33,6 @@ CREATE TABLE channels (
     channel_item INTEGER
 );
 
-CREATE UNIQUE INDEX channel_title_ui ON channels(channel_id);
-
 CREATE TABLE locations (
     loc_id bigserial PRIMARY KEY,
     loc_city VARCHAR(1024),
@@ -42,7 +40,7 @@ CREATE TABLE locations (
     loc_region VARCHAR(1024)
 );
 
-CREATE UNIQUE INDEX loc_city_country_region_ui ON locations(loc_city, loc_country, loc_region);
+CREATE UNIQUE INDEX loc_city_country_region_ui ON locations(loc_city);
 
 CREATE TABLE winds (
     wind_id bigserial PRIMARY KEY,
@@ -50,8 +48,6 @@ CREATE TABLE winds (
     wind_direction INTEGER,
     wind_speed INTEGER
 );
-
-CREATE UNIQUE INDEX wind_chill_direction_speed_ui ON winds(wind_chill, wind_direction, wind_speed);
 
 CREATE TABLE atmospheres (
     atmo_id BIGSERIAL PRIMARY KEY,

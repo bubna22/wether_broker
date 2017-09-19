@@ -4,8 +4,8 @@ package com.bubna;
 import com.bubna.dao.DAOConfig;
 import com.bubna.dao.DataSourceConfig;
 import com.bubna.model.ModelConfig;
-import com.bubna.spring.utils.WeatherMessagingConfig;
-import com.bubna.spring.utils.WeatherQueryReceiver;
+import com.bubna.spring.jms.WeatherMessagingConfig;
+import com.bubna.spring.jms.WeatherQueryReceiver;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 public class AppInit extends AbstractAnnotationConfigDispatcherServletInitializer {

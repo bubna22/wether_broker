@@ -5,7 +5,7 @@ import com.bubna.model.entity.Channel;
 import com.bubna.model.entity.Location;
 import com.bubna.model.entity.Query;
 import com.bubna.model.entity.json.JsonQuery;
-import com.bubna.spring.utils.WeatherQuerySender;
+import com.bubna.spring.jms.WeatherQuerySender;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

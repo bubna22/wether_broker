@@ -1,7 +1,6 @@
 package com.bubna.model.entity;
 
-import com.bubna.model.entity.json.Custom1JsonDateDeserializer;
-import com.bubna.model.entity.json.CustomJsonDateDeserializer;
+import com.bubna.model.entity.json.utils.CustomJsonDateDeserializer;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
@@ -27,7 +26,7 @@ public class Item implements Serializable {
     @Column(name = "item_link")
     private String link;
     @Column(name = "item_pub_date")
-    @JsonDeserialize(using = Custom1JsonDateDeserializer.class)
+    @JsonDeserialize(using = CustomJsonDateDeserializer.class)
     private Date pubDate;
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "item_condition")
