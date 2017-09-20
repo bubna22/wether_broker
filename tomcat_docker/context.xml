@@ -25,7 +25,7 @@
             username="postgres"
             password=""></ResourceLink>
 	<ResourceLink
-            name="jms/ConnectionFactory"
+            name="ConnectionFactory"
             global="jms/ConnectionFactoryGlobal"
             type="org.apache.activemq.ActiveMQConnectionFactory"
             factory="org.apache.activemq.jndi.JNDIReferenceFactory"></ResourceLink>

@@ -43,7 +43,7 @@ public class WeatherMessagingConfig {
         try {
             initialContext = new InitialContext();
             Context envContext = (Context) initialContext.lookup("java:comp/env");
-            final TopicConnectionFactory factory = (TopicConnectionFactory) envContext.lookup("ConnectionFactory");
+            final TopicConnectionFactory factory = (TopicConnectionFactory) envContext.lookup("jms/ConnectionFactory");
             TopicConnection connection = factory.createTopicConnection();
             connection.start();
             TopicSession session = connection.createTopicSession(true, Session.AUTO_ACKNOWLEDGE);

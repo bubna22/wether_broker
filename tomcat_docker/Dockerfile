@@ -128,9 +128,11 @@ RUN rm apache-activemq-5.14.3-bin.tar.gz
 RUN /usr/local/tomcat/apache-activemq-5.14.3/bin/activemq start
 
 EXPOSE 8080
-COPY tomcat-users.xml /usr/local/tomcat/conf/tomcat-users.xml
-COPY server.xml /usr/local/tomcat/conf/server.xml
+
 RUN export JAVA_OPTS='-Dwebconsole.type=properties -Dwebconsole.jms.url=tcp://localhost:61616 -Dwebconsole.jmx.url=service:jmx:rmi:///jndi/rmi://localhost:1099/ jmxrmi'
 COPY activemq-all-5.4.3.jar /usr/local/tomcat/lib/activemq-all-5.4.3.jar
 COPY commons-logging-1.1.jar /usr/local/tomcat/lib/commons-logging-1.1.jar
+COPY server.xml /usr/local/tomcat/conf/server.xml
+COPY tomcat-users.xml /usr/local/tomcat/conf/tomcat-users.xml
+#COPY context.xml /usr/local/tomcat/conf/context.xml
 CMD ["catalina.sh", "run"]

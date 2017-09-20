@@ -6,8 +6,8 @@ import com.bubna.dao.DataSourceConfig;
 import com.bubna.model.ModelConfig;
 import com.bubna.spring.jms.WeatherMessagingConfig;
 import com.bubna.spring.jms.WeatherQueryReceiver;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
-
 public class AppInit extends AbstractAnnotationConfigDispatcherServletInitializer {
     @Override
     protected Class<?>[] getRootConfigClasses() {

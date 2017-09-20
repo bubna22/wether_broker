@@ -38,41 +38,37 @@
     <!-- Editable user database that can also be used by
          UserDatabaseRealm to authenticate users
     -->
-    <Resource name="UserDatabase" auth="Container"
-              type="org.apache.catalina.UserDatabase"
-              description="User database that can be updated and saved"
-              factory="org.apache.catalina.users.MemoryUserDatabaseFactory"
-              pathname="conf/tomcat-users.xml" />
-    <Resource name="jdbc/postgres"
+<Resource name="UserDatabase" auth="Container"
+      type="org.apache.catalina.UserDatabase"
+      description="User database that can be updated and saved"
+      factory="org.apache.catalina.users.MemoryUserDatabaseFactory"
+      pathname="conf/tomcat-users.xml" />
+
+  <Resource name="jms/ConnectionFactoryGlobal"
+        auth="Container"
+        type="org.apache.activemq.ActiveMQConnectionFactory"
+        description="JMS Connection Factory"
+        factory="org.apache.activemq.jndi.JNDIReferenceFactory"
+        brokerURL="tcp://localhost:61616"
+        brokerName="LocalActiveMQBroker"
+        useEmbeddedBroker="false"/>
+
+    <Resource name="jms/topic/MyTopic"
               auth="Container"
-              type="javax.sql.DataSource"
-              driverClassName="org.postgresql.Driver"
+              type="org.apache.activemq.command.ActiveMQTopic"
+              factory="org.apache.activemq.jndi.JNDIReferenceFactory"
+              physicalName="MY.TEST.FOO"/>
+    <Resource name="jms/queue/MyQueue"
+              auth="Container"
+              type="org.apache.activemq.command.ActiveMQQueue"
+              factory="org.apache.activemq.jndi.JNDIReferenceFactory"
+              physicalName="MY.TEST.FOO.QUEUE"/>
+
+    <Resource name="jdbc/postgresGlobal" auth="Container"
+              type="javax.sql.DataSource" driverClassName="org.postgresql.Driver"
               url="jdbc:postgresql://172.18.0.3:5432/postgres"
-              username="postgres"
-              password=""
-              maxActive="20"
-              maxIdle="10"
+              username="postgres" password="" maxActive="20" maxIdle="10"
               maxWait="-1"/>
-    <Resource name="jms/ConnectionFactory" auth="Container"
-          type="org.apache.activemq.ActiveMQConnectionFactory"/>
-          <ResourceParams name="jms/ConnectionFactory">
-            <parameter>
-              <name>factory</name>
-              <value>org.activemq.jndi.JNDIReferenceFactory</value>
-            </parameter>
-            <parameter>
-              <name>brokerURL</name>
-              <value>vm://localhost</value>
-            </parameter>
-            <parameter>
-              <name>brokerName</name>
-              <value>LocalActiveMQBroker</value>
-            </parameter>
-            <parameter>
-              <name>useEmbeddedBroker</name>
-              <value>true</value>
-            </parameter>
-          </ResourceParams>
   </GlobalNamingResources>
 
   <!-- A "Service" is a collection of one or more "Connectors" that share
