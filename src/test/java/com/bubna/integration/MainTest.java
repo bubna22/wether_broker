@@ -33,25 +33,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class MainTest {
 
     @Autowired
-    private WebApplicationContext wac;
+    private WebApplicationContext webApplicationContext;
 
     private MockMvc mockMvc;
     @Before
     public void setup() throws Exception {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
     @Test
-    public void givenWac_whenServletContext_thenItProvidesGreetController() {
-        ServletContext servletContext = wac.getServletContext();
+    public void contextAvailableTest() {
+        ServletContext servletContext = webApplicationContext.getServletContext();
 
         Assert.assertNotNull(servletContext);
         Assert.assertTrue(servletContext instanceof MockServletContext);
-        Assert.assertNotNull(wac.getBean(DefaultController.class));
+        Assert.assertNotNull(webApplicationContext.getBean(DefaultController.class));
     }
 
     @Test
-    public void testDefaultControllerGetRequest() throws Exception {
+    public void defaultControllerGetRequestTest() throws Exception {
         this.mockMvc
                 .perform(get("/update/{name}", "Engels"))
                 .andDo(print()).andExpect(status().isOk());
@@ -61,7 +61,7 @@ public class MainTest {
     }
 
     @Test
-    public void testDefaultRestControllerGetRequest() throws Exception {
+    public void defaultRestControllerGetRequestTest() throws Exception {
         this.mockMvc
                 .perform(get("/update/{town_name}", "enGels"))
                 .andDo(print()).andExpect(status().isOk());

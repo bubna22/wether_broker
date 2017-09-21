@@ -39,7 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class JmsTest {
 
     @Autowired
-    private WebApplicationContext wac;
+    private WebApplicationContext webApplicationContext;
 
     @Autowired
     private JmsTemplate jmsTemplate;
@@ -47,23 +47,23 @@ public class JmsTest {
     private MockMvc mockMvc;
     @Before
     public void setup() throws Exception {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
     @Test
-    public void topicTest() {
+    public void sendReceiveTopicMessageTest() {
         jmsTemplate.convertAndSend("test_receive", "hello world");
     }
 
     @JmsListener(destination = "test_sending")
     @Profile("test")
-    public void receive2Msg(ActiveMQTextMessage msg) throws JMSException {
+    public void testSendingTopicReceiveMsg(ActiveMQTextMessage msg) throws JMSException {
         Assert.assertNotNull(msg);
     }
 
     @JmsListener(destination = "test_receive")
     @Profile("test")
-    public void receiveMsg(ActiveMQTextMessage msg) throws JMSException {
+    public void testReceiveTopicReceiveMsg(ActiveMQTextMessage msg) throws JMSException {
         Assert.assertNotNull(msg);
         jmsTemplate.convertAndSend("test_sending", msg.getText());
     }
