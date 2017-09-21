@@ -1,5 +1,11 @@
 <html>
+<head>
+<title>weather broker</title>
+</head>
 <body>
-<h2>Hello World!</h2>
+<form action="/update" method="GET">
+<input name="townName">
+<input type="submit">
+</form>
 </body>
 </html>

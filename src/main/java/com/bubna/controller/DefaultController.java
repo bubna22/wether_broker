@@ -30,8 +30,8 @@ public class DefaultController {
 
     private static final Logger logger = Logger.getLogger(DefaultController.class);
 
-    @RequestMapping(path = "/update/{town_name}", method = RequestMethod.GET)
-    public String update(@PathVariable(name = "town_name") String townName) throws IOException {
+    @RequestMapping(path = "/update", method = RequestMethod.GET)
+    public String update(@RequestParam(name = "town_name") String townName) throws IOException {
         logger.debug("start download weather");
         ResponseEntity<JsonQuery> responseJsonQuery = restTemplate
                 .getForEntity("https://query.yahooapis.com/v1/public/yql?q=select * from weather.forecast where " +
