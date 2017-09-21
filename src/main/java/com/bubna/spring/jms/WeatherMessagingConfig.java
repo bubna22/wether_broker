@@ -25,7 +25,7 @@ import javax.naming.NamingException;
 public class WeatherMessagingConfig {
 
     private static Logger logger = Logger.getLogger(WeatherMessagingConfig.class);
-    private InitialContext initialContext = new InitialContext();
+//    private InitialContext initialContext = new InitialContext();
 
     public WeatherMessagingConfig() throws NamingException {
     }
@@ -35,6 +35,7 @@ public class WeatherMessagingConfig {
     public ActiveMQConnectionFactory connectionFactory() {
         ActiveMQConnectionFactory connectionFactory = null;
         try {
+            InitialContext initialContext = new InitialContext();
             Context envContext = (Context) initialContext.lookup("java:comp/env");
             connectionFactory = (ActiveMQConnectionFactory) envContext.lookup("jms/ConnectionFactory");
         } catch (NamingException e) {
@@ -54,9 +55,11 @@ public class WeatherMessagingConfig {
     }
 
     @Bean
+    @Profile("release")
     public ActiveMQTopic getTopic() throws JMSException {
         Topic topic = null;
         try {
+            InitialContext initialContext = new InitialContext();
             Context envContext = (Context) initialContext.lookup("java:comp/env");
             final TopicConnectionFactory factory = (TopicConnectionFactory) envContext.lookup("jms/ConnectionFactory");
             TopicConnection connection = factory.createTopicConnection();
@@ -72,12 +75,23 @@ public class WeatherMessagingConfig {
     }
 
     @Bean
-    public DestinationResolver destinationResolver() {
-        return new DestinationResolver() {
-            public Destination resolveDestinationName(Session session, String s, boolean b) throws JMSException {
-                return getTopic();
-            }
-        };
+    @Profile("test")
+    public ActiveMQTopic getTestTopic() throws JMSException {
+        Topic topic = null;
+//        try {
+//            InitialContext initialContext = new InitialContext();
+//            Context envContext = (Context) initialContext.lookup("java:comp/env");
+//            final TopicConnectionFactory factory = (TopicConnectionFactory) envContext.lookup("jms/ConnectionFactory");
+//            TopicConnection connection = factory.createTopicConnection();
+//            connection.start();
+//            TopicSession session = connection.createTopicSession(true, Session.AUTO_ACKNOWLEDGE);
+//            topic = session.createTopic("WEATHER.UPDATE.REQUEST");
+//        } catch (NamingException e) {
+//            logger.fatal(e);
+//            throw new RuntimeException(e);
+//        }
+
+        return null;
     }
 
     @Bean
@@ -95,7 +109,7 @@ public class WeatherMessagingConfig {
     public JmsTemplate jmsTemplate(ActiveMQTopic topic, ActiveMQConnectionFactory connectionFactory) throws JMSException {
         JmsTemplate template = new JmsTemplate();
         template.setConnectionFactory(connectionFactory);
-        template.setDefaultDestination(getTopic());
+        template.setDefaultDestination(topic);
         template.setMessageConverter(jacksonJmsMessageConverter());
         template.setPubSubDomain(true);
         template.setDeliveryPersistent(true);
