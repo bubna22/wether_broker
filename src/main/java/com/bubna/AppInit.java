@@ -7,10 +7,13 @@ import com.bubna.model.ModelConfig;
 import com.bubna.spring.jms.WeatherMessagingConfig;
 import com.bubna.spring.jms.WeatherQueryReceiver;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 public class AppInit extends AbstractAnnotationConfigDispatcherServletInitializer {
+
     @Override
     protected Class<?>[] getRootConfigClasses() {
+        System.setProperty("spring.profiles.default", "release");
         return new Class<?>[]{
                 WeatherMessagingConfig.class,
                 WeatherQueryReceiver.class,
@@ -24,7 +27,7 @@ public class AppInit extends AbstractAnnotationConfigDispatcherServletInitialize
     @Override
     protected Class<?>[] getServletConfigClasses() {
         return new Class<?>[]{
-                WebConfig.class
+
         };
     }
 

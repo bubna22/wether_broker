@@ -2,8 +2,10 @@ package com.bubna.spring.jms;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.command.ActiveMQTopic;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.jms.annotation.EnableJms;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.core.JmsTemplate;
@@ -21,6 +23,7 @@ import javax.naming.NamingException;
 @EnableJms
 public class WeatherMessagingConfig {
     @Bean
+    @Profile("release")
     public ActiveMQConnectionFactory connectionFactory() {
         InitialContext initialContext = null;
         ActiveMQConnectionFactory connectionFactory = null;
@@ -34,6 +37,14 @@ public class WeatherMessagingConfig {
         }
         connectionFactory.setTrustAllPackages(true);
         return connectionFactory;
+    }
+
+    @Bean
+    @Profile("test")
+    public ActiveMQConnectionFactory testConnectionFactory() {
+        ActiveMQConnectionFactory cf = new ActiveMQConnectionFactory("tcp://172.18.0.2:61616");
+        cf.setTrustAllPackages(true);
+        return cf;
     }
 
     @Bean
@@ -66,18 +77,20 @@ public class WeatherMessagingConfig {
     }
 
     @Bean
-    public DefaultJmsListenerContainerFactory jmsListenerContainerFactory() {
+    @Autowired
+    public DefaultJmsListenerContainerFactory jmsListenerContainerFactory(ActiveMQConnectionFactory connectionFactory) {
         DefaultJmsListenerContainerFactory factory =
                 new DefaultJmsListenerContainerFactory();
-        factory.setConnectionFactory(connectionFactory());
+        factory.setConnectionFactory(connectionFactory);
         factory.setPubSubDomain(true);
         return factory;
     }
 
     @Bean
-    public JmsTemplate jmsTemplate(ActiveMQTopic topic) throws JMSException {
+    @Autowired
+    public JmsTemplate jmsTemplate(ActiveMQTopic topic, ActiveMQConnectionFactory connectionFactory) throws JMSException {
         JmsTemplate template = new JmsTemplate();
-        template.setConnectionFactory(connectionFactory());
+        template.setConnectionFactory(connectionFactory);
         template.setDefaultDestination(getTopic());
         template.setMessageConverter(jacksonJmsMessageConverter());
         template.setPubSubDomain(true);

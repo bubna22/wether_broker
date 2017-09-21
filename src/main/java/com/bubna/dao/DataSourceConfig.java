@@ -1,8 +1,8 @@
 package com.bubna.dao;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
+import org.apache.log4j.Logger;
+import org.springframework.context.annotation.*;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jndi.JndiTemplate;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -29,6 +29,7 @@ public class DataSourceConfig {
     }
 
     @Bean
+    @Profile("release")
     DataSource dataSource() {
         DataSource dataSource = null;
         JndiTemplate jndi = new JndiTemplate();
@@ -40,6 +41,21 @@ public class DataSourceConfig {
     }
 
     @Bean
+    @Profile({"test"})
+    @Primary
+    DataSource testDataSource() {
+        DriverManagerDataSource dataSource = null;
+        JndiTemplate jndi = new JndiTemplate();
+        dataSource = new DriverManagerDataSource();
+        dataSource.setUrl("jdbc:postgresql://172.18.0.3:5432/postgres");
+        dataSource.setUsername("postgres");
+        dataSource.setPassword("");
+        dataSource.setDriverClassName("org.postgresql.Driver");
+        return dataSource;
+    }
+
+    @Bean
+    @Profile("release")
     public LocalContainerEntityManagerFactoryBean getEMF() {
 
         LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
@@ -52,9 +68,29 @@ public class DataSourceConfig {
         jpaProperties.put("hibernate.show_sql", "true");
         jpaProperties.put("connection_pool_size","1");
         emf.setJpaProperties(jpaProperties);
-//        emf.setMappingResources("com.bubna.model.entity.Contact", "com.bubna.model.entity.Group", "com.bubna.model.entity.User");
         return emf;
     }
+
+    @Bean
+    @Profile("test")
+    public LocalContainerEntityManagerFactoryBean getTestEMF() {
+
+        LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
+        emf.setPackagesToScan("com.bubna.model.entity");
+        emf.setPersistenceUnitName("entities");
+        emf.setJpaVendorAdapter(getHibernateAdapter());
+        Properties jpaProperties = new Properties();
+        jpaProperties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
+        jpaProperties.put("hibernate.connection.driver_class", "org.postgresql.Driver");
+        jpaProperties.put("hibernate.connection.url", "jdbc:postgresql://172.18.0.3:5432/postgres");
+        jpaProperties.put("hibernate.connection.username", "postgres");
+        jpaProperties.put("hibernate.connection.password", "");
+        jpaProperties.put("hibernate.show_sql", "true");
+        jpaProperties.put("connection_pool_size","1");
+        emf.setJpaProperties(jpaProperties);
+        return emf;
+    }
+
     @Bean
     public JpaVendorAdapter getHibernateAdapter() {
         return new HibernateJpaVendorAdapter();
