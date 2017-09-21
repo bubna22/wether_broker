@@ -2,6 +2,7 @@ package com.bubna.spring.jms;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.command.ActiveMQTopic;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,18 +23,23 @@ import javax.naming.NamingException;
 @Configuration
 @EnableJms
 public class WeatherMessagingConfig {
+
+    private static Logger logger = Logger.getLogger(WeatherMessagingConfig.class);
+    private InitialContext initialContext = new InitialContext();
+
+    public WeatherMessagingConfig() throws NamingException {
+    }
+
     @Bean
     @Profile("release")
     public ActiveMQConnectionFactory connectionFactory() {
-        InitialContext initialContext = null;
         ActiveMQConnectionFactory connectionFactory = null;
         try {
-            initialContext = new InitialContext();
             Context envContext = (Context) initialContext.lookup("java:comp/env");
             connectionFactory = (ActiveMQConnectionFactory) envContext.lookup("jms/ConnectionFactory");
         } catch (NamingException e) {
-            //TODO: generate runtime exception
-            e.printStackTrace();
+            logger.fatal(e);
+            throw new RuntimeException(e);
         }
         connectionFactory.setTrustAllPackages(true);
         return connectionFactory;
@@ -42,26 +48,24 @@ public class WeatherMessagingConfig {
     @Bean
     @Profile("test")
     public ActiveMQConnectionFactory testConnectionFactory() {
-        ActiveMQConnectionFactory cf = new ActiveMQConnectionFactory("tcp://172.18.0.2:61616");
-        cf.setTrustAllPackages(true);
-        return cf;
+        ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("tcp://172.18.0.2:61616");
+        connectionFactory.setTrustAllPackages(true);
+        return connectionFactory;
     }
 
     @Bean
     public ActiveMQTopic getTopic() throws JMSException {
-        InitialContext initialContext;
         Topic topic = null;
         try {
-            initialContext = new InitialContext();
             Context envContext = (Context) initialContext.lookup("java:comp/env");
             final TopicConnectionFactory factory = (TopicConnectionFactory) envContext.lookup("jms/ConnectionFactory");
             TopicConnection connection = factory.createTopicConnection();
             connection.start();
             TopicSession session = connection.createTopicSession(true, Session.AUTO_ACKNOWLEDGE);
-            topic = session.createTopic("MY.TEST.FOO");
+            topic = session.createTopic("WEATHER.UPDATE.REQUEST");
         } catch (NamingException e) {
-            //TODO: generate runtime exception
-            e.printStackTrace();
+            logger.fatal(e);
+            throw new RuntimeException(e);
         }
 
         return (ActiveMQTopic) topic;
@@ -98,7 +102,7 @@ public class WeatherMessagingConfig {
         return template;
     }
 
-    @Bean // Serialize message content to json using TextMessage
+    @Bean
     public MessageConverter jacksonJmsMessageConverter() {
         MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
         converter.setTargetType(MessageType.TEXT);

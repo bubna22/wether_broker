@@ -11,13 +11,13 @@ public class QueryModel implements Model<Query> {
     @Qualifier("queryDAO")
     private DAO queryDAO;
 
-    public Query get(Query q) {
-        queryDAO.addInput("entity", q);
+    public Query get(Query query) {
+        queryDAO.addInput("entity", query);
         return (Query) queryDAO.get();
     }
 
-    public void update(Query q) {
-        queryDAO.addInput("entity", q);
+    public void update(Query query) {
+        queryDAO.addInput("entity", query);
         queryDAO.update();
     }
 }

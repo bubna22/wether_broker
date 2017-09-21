@@ -32,17 +32,6 @@ import static com.fasterxml.jackson.databind.DeserializationFeature.UNWRAP_ROOT_
 @ComponentScan("com.bubna")
 public class WebConfig extends WebMvcConfigurerAdapter {
 
-//    @Autowired
-//    private ConfigurableEnvironment env;
-
-//    @PostConstruct
-//    public void construct() {
-//        for (int i = 0; i < env.getActiveProfiles().length; i++) {
-//            if (env.getActiveProfiles()[i].equals("test")) return;
-//        }
-//        env.addActiveProfile("release");
-//    }
-
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/**").addResourceLocations("/");

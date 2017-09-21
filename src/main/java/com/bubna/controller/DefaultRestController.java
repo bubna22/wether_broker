@@ -21,11 +21,11 @@ public class DefaultRestController {
     @RequestMapping(path = "/get/{town_name}", method = RequestMethod.GET)
     public Query update(@PathVariable(name = "town_name") String townName) {
         Query inputQuery = new Query();
-        Channel c = new Channel();
-        Location l = new Location();
-        l.setCity(townName);
-        c.setLocation(l);
-        inputQuery.setChannel(c);
+        Channel channel = new Channel();
+        Location location = new Location();
+        location.setCity(townName.toLowerCase());
+        channel.setLocation(location);
+        inputQuery.setChannel(channel);
         return (Query) model.get(inputQuery);
     }
 }

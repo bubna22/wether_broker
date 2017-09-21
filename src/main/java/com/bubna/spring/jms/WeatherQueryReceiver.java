@@ -21,7 +21,7 @@ public class WeatherQueryReceiver {
     @Qualifier("queryModel")
     private Model queryModel;
 
-    @JmsListener(destination = "MY.TEST.FOO", containerFactory = "jmsListenerContainerFactory")
+    @JmsListener(destination = "WEATHER.UPDATE.REQUEST", containerFactory = "jmsListenerContainerFactory")
     public void receiveMessage(ActiveMQObjectMessage message) {
         JsonQuery inputQuery = null;
         try {

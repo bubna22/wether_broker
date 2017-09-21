@@ -30,6 +30,6 @@ public class WeatherQuerySender {
                 return message;
             }
         };
-        jmsTemplate.send("MY.TEST.FOO", creator);
+        jmsTemplate.send("WEATHER.UPDATE.REQUEST", creator);
     }
 }
