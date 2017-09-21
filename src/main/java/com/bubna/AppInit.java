@@ -13,7 +13,7 @@ public class AppInit extends AbstractAnnotationConfigDispatcherServletInitialize
 
     @Override
     protected Class<?>[] getRootConfigClasses() {
-//        System.setProperty("spring.profiles.default", "release");
+        System.setProperty("spring.profiles.default", "test");
         return new Class<?>[]{
                 WebConfig.class,
                 WeatherMessagingConfig.class,

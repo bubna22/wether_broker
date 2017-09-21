@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -33,7 +34,9 @@ public class QueryDAO implements DAO<Query> {
         javax.persistence.Query query = entityManager
                 .createQuery("SELECT q FROM Query q WHERE q.channel.location.city = :location_city", Query.class)
                 .setParameter("location_city", inputQuery.getChannel().getLocation().getCity());
-        return (Query) query.getSingleResult();
+        ArrayList<Query> result = (ArrayList<Query>) query.getResultList();
+        if (result.size() < 1) logger.fatal("-------------------------no entities to display-------------------------\n");
+        return result.get(0);
     }
 
     @Transactional
@@ -41,10 +44,12 @@ public class QueryDAO implements DAO<Query> {
         logger.warn("transaction started");
         Query inputQuery = (Query) input.get("entity");
         logger.warn("select queries");
+        logger.warn("city: " + inputQuery.getChannel().getLocation().getCity());
         javax.persistence.Query query = entityManager
-                .createQuery("SELECT q FROM Query q", Query.class);
+                .createQuery("SELECT q FROM Query q WHERE q.channel.location.city = :location_city", Query.class)
+                .setParameter("location_city", inputQuery.getChannel().getLocation().getCity());
         logger.warn("get result from select");
-        List<Query> result = query.getResultList();
+        ArrayList<Query> result = (ArrayList<Query>) query.getResultList();
         if (result.size() < 1) {
             logger.warn("persist start");
             entityManager.persist(inputQuery);
@@ -52,8 +57,10 @@ public class QueryDAO implements DAO<Query> {
         } else {
             logger.warn("update start");
             Query outputQuery = result.get(0);
-            inputQuery.setId(outputQuery.getId());
-            entityManager.merge(inputQuery);
+            outputQuery.setChannel(inputQuery.getChannel());
+            outputQuery.setCount(inputQuery.getCount());
+            outputQuery.setCreated(inputQuery.getCreated());
+            outputQuery.setLang(inputQuery.getLang());
             logger.warn("update end");
         }
     }

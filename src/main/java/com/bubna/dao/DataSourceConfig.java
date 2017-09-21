@@ -67,25 +67,25 @@ public class DataSourceConfig {
         return entityManagerFactory;
     }
 
-//    @Bean
-//    @Profile("test")
-//    public LocalContainerEntityManagerFactoryBean getTestEntityManagerFactory() {
-//
-//        LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
-//        entityManagerFactory.setPackagesToScan("com.bubna.model.entity");
-//        entityManagerFactory.setPersistenceUnitName("entities");
-//        entityManagerFactory.setJpaVendorAdapter(getHibernateAdapter());
-//        Properties jpaProperties = new Properties();
-//        jpaProperties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
-//        jpaProperties.put("hibernate.connection.driver_class", "org.postgresql.Driver");
-//        jpaProperties.put("hibernate.connection.url", "jdbc:postgresql://172.18.0.3:5432/postgres");
-//        jpaProperties.put("hibernate.connection.username", "postgres");
-//        jpaProperties.put("hibernate.connection.password", "");
-//        jpaProperties.put("hibernate.show_sql", "true");
-//        jpaProperties.put("connection_pool_size","1");
-//        entityManagerFactory.setJpaProperties(jpaProperties);
-//        return entityManagerFactory;
-//    }
+    @Bean
+    @Profile("test")
+    public LocalContainerEntityManagerFactoryBean getTestEntityManagerFactory() {
+
+        LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
+        entityManagerFactory.setPackagesToScan("com.bubna.model.entity");
+        entityManagerFactory.setPersistenceUnitName("entities");
+        entityManagerFactory.setJpaVendorAdapter(getHibernateAdapter());
+        Properties jpaProperties = new Properties();
+        jpaProperties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
+        jpaProperties.put("hibernate.connection.driver_class", "org.postgresql.Driver");
+        jpaProperties.put("hibernate.connection.url", "jdbc:postgresql://172.18.0.3:5432/postgres");
+        jpaProperties.put("hibernate.connection.username", "postgres");
+        jpaProperties.put("hibernate.connection.password", "");
+        jpaProperties.put("hibernate.show_sql", "true");
+        jpaProperties.put("connection_pool_size","1");
+        entityManagerFactory.setJpaProperties(jpaProperties);
+        return entityManagerFactory;
+    }
 
     @Bean
     public JpaVendorAdapter getHibernateAdapter() {

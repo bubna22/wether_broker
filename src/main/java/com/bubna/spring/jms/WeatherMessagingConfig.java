@@ -76,22 +76,14 @@ public class WeatherMessagingConfig {
 
     @Bean
     @Profile("test")
-    public ActiveMQTopic getTestTopic() throws JMSException {
-        Topic topic = null;
-//        try {
-//            InitialContext initialContext = new InitialContext();
-//            Context envContext = (Context) initialContext.lookup("java:comp/env");
-//            final TopicConnectionFactory factory = (TopicConnectionFactory) envContext.lookup("jms/ConnectionFactory");
-//            TopicConnection connection = factory.createTopicConnection();
-//            connection.start();
-//            TopicSession session = connection.createTopicSession(true, Session.AUTO_ACKNOWLEDGE);
-//            topic = session.createTopic("WEATHER.UPDATE.REQUEST");
-//        } catch (NamingException e) {
-//            logger.fatal(e);
-//            throw new RuntimeException(e);
-//        }
+    @Autowired
+    public ActiveMQTopic getTestTopic(ActiveMQConnectionFactory connectionFactory) throws JMSException {
+        TopicConnection connection = connectionFactory.createTopicConnection();
+        connection.start();
+        TopicSession session = connection.createTopicSession(true, Session.AUTO_ACKNOWLEDGE);
+        Topic topic = session.createTopic("WEATHER.UPDATE.REQUEST");
 
-        return null;
+        return (ActiveMQTopic) topic;
     }
 
     @Bean

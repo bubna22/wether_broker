@@ -40,8 +40,6 @@ CREATE TABLE locations (
     loc_region VARCHAR(1024)
 );
 
-CREATE UNIQUE INDEX loc_city_country_region_ui ON locations(loc_city);
-
 CREATE TABLE winds (
     wind_id bigserial PRIMARY KEY,
     wind_chill INTEGER,
