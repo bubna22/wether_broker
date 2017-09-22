@@ -13,7 +13,6 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.support.converter.MappingJackson2MessageConverter;
 import org.springframework.jms.support.converter.MessageConverter;
 import org.springframework.jms.support.converter.MessageType;
-import org.springframework.jms.support.destination.DestinationResolver;
 
 import javax.jms.*;
 import javax.naming.Context;
@@ -25,10 +24,12 @@ import javax.naming.NamingException;
 public class WeatherMessagingConfig {
 
     private static Logger logger = Logger.getLogger(WeatherMessagingConfig.class);
-//    private InitialContext initialContext = new InitialContext();
 
-    public WeatherMessagingConfig() throws NamingException {
-    }
+    @Autowired
+    private ActiveMQConnectionFactory connectionFactory;
+
+    @Autowired
+    private ActiveMQTopic topic;
 
     @Bean
     @Profile("release")
@@ -76,8 +77,7 @@ public class WeatherMessagingConfig {
 
     @Bean
     @Profile("test")
-    @Autowired
-    public ActiveMQTopic getTestTopic(ActiveMQConnectionFactory connectionFactory) throws JMSException {
+    public ActiveMQTopic getTestTopic() throws JMSException {
         TopicConnection connection = connectionFactory.createTopicConnection();
         connection.start();
         TopicSession session = connection.createTopicSession(true, Session.AUTO_ACKNOWLEDGE);
@@ -87,8 +87,7 @@ public class WeatherMessagingConfig {
     }
 
     @Bean
-    @Autowired
-    public DefaultJmsListenerContainerFactory jmsListenerContainerFactory(ActiveMQConnectionFactory connectionFactory) {
+    public DefaultJmsListenerContainerFactory jmsListenerContainerFactory() {
         DefaultJmsListenerContainerFactory factory =
                 new DefaultJmsListenerContainerFactory();
         factory.setConnectionFactory(connectionFactory);
@@ -97,22 +96,14 @@ public class WeatherMessagingConfig {
     }
 
     @Bean
-    @Autowired
-    public JmsTemplate jmsTemplate(ActiveMQTopic topic, ActiveMQConnectionFactory connectionFactory) throws JMSException {
+    public JmsTemplate jmsTemplate() throws JMSException {
         JmsTemplate template = new JmsTemplate();
         template.setConnectionFactory(connectionFactory);
         template.setDefaultDestination(topic);
-        template.setMessageConverter(jacksonJmsMessageConverter());
+//        template.setMessageConverter(jacksonJmsMessageConverter());
         template.setPubSubDomain(true);
         template.setDeliveryPersistent(true);
         return template;
     }
 
-    @Bean
-    public MessageConverter jacksonJmsMessageConverter() {
-        MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
-        converter.setTargetType(MessageType.TEXT);
-        converter.setTypeIdPropertyName("_type");
-        return converter;
-    }
 }

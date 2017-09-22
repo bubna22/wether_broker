@@ -1,6 +1,6 @@
 package com.bubna.spring.jms;
 
-import com.bubna.model.Model;
+import com.bubna.model.dao.DAO;
 import com.bubna.model.entity.Query;
 import com.bubna.model.entity.json.JsonQuery;
 import org.apache.activemq.command.ActiveMQObjectMessage;
@@ -18,8 +18,8 @@ public class WeatherQueryReceiver {
     private static final Logger logger = Logger.getLogger(WeatherQueryReceiver.class);
 
     @Autowired
-    @Qualifier("queryModel")
-    private Model queryModel;
+    @Qualifier("queryDAO")
+    private DAO<Query> dao;
 
     @JmsListener(destination = "WEATHER.UPDATE.REQUEST", containerFactory = "jmsListenerContainerFactory")
     public void receiveMessage(ActiveMQObjectMessage message) {
@@ -36,6 +36,6 @@ public class WeatherQueryReceiver {
         outputQuery.setLang(inputQuery.getLang());
         outputQuery.setCreated(inputQuery.getCreated());
         outputQuery.setCount(inputQuery.getCount());
-        queryModel.update(outputQuery);
+        dao.update(outputQuery);
     }
 }

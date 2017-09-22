@@ -1,5 +1,6 @@
-package com.bubna.model.entity.json.utils;
+package com.bubna.utils.json;
 
+import com.bubna.utils.Handler;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
@@ -13,7 +14,7 @@ import java.util.Locale;
 public class CustomJsonDateDeserializer extends JsonDeserializer<Date> {
 
     private static final Logger logger = Logger.getLogger(CustomJsonDateDeserializer.class);
-    private final DateDeserializerHandler dateDeserializer;
+    private final Handler<String, Date> dateDeserializer;
 
     public CustomJsonDateDeserializer() {
         dateDeserializer = new DateDeserializerHandler(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"));

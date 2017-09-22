@@ -1,4 +1,4 @@
-package com.bubna.dao;
+package com.bubna.model.dao;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,36 +1,9 @@
-CREATE TABLE queries (
-    query_id bigserial PRIMARY KEY,
-    query_count INTEGER,
-    query_created TIMESTAMP,
-    query_lang VARCHAR(10),
-    query_channel INTEGER
-);
-
-CREATE UNIQUE INDEX query_created_ui ON queries(query_created);
-
 CREATE TABLE units (
     units_id bigserial PRIMARY KEY,
     units_distance VARCHAR(1024),
     units_pressure VARCHAR(1024),
     units_speed VARCHAR(1024),
     units_temperature VARCHAR(1024)
-);
-
-CREATE TABLE channels (
-    channel_id bigserial PRIMARY KEY,
-    channel_units INTEGER,
-    channel_title VARCHAR(1024),
-    channel_link VARCHAR(1024),
-    channel_desc VARCHAR(2048),
-    channel_lang VARCHAR(10),
-    channel_last_build TIMESTAMP,
-    channel_ttl INTEGER,
-    channel_location INTEGER,
-    channel_wind INTEGER,
-    channel_atmosphere INTEGER,
-    channel_astronomy INTEGER,
-    channel_image INTEGER,
-    channel_item INTEGER
 );
 
 CREATE TABLE locations (
@@ -70,6 +43,14 @@ CREATE TABLE images (
     image_url VARCHAR(1024)
 );
 
+CREATE TABLE conditions (
+    condition_id bigserial PRIMARY KEY,
+    condition_code INTEGER,
+    condition_date TIMESTAMP,
+    condition_temp INTEGER,
+    condition_text VARCHAR(1024)
+);
+
 CREATE TABLE items (
     item_id bigserial PRIMARY KEY,
     item_title VARCHAR(1024),
@@ -78,15 +59,7 @@ CREATE TABLE items (
     item_link VARCHAR(1024),
     item_desc VARCHAR(2048),
     item_pub_date TIMESTAMP,
-    item_condition INTEGER
-);
-
-CREATE TABLE conditions (
-    condition_id bigserial PRIMARY KEY,
-    condition_code INTEGER,
-    condition_date TIMESTAMP,
-    condition_temp INTEGER,
-    condition_text VARCHAR(1024)
+    item_condition INTEGER REFERENCES conditions ON DELETE RESTRICT
 );
 
 CREATE TABLE forecasts (
@@ -96,5 +69,32 @@ CREATE TABLE forecasts (
     forecast_high INTEGER,
     forecast_low INTEGER,
     forecast_text VARCHAR(1024),
-    forecast_item INTEGER
+    forecast_item INTEGER REFERENCES items ON DELETE CASCADE
 );
+
+CREATE TABLE channels (
+    channel_id bigserial PRIMARY KEY,
+    channel_units INTEGER REFERENCES units ON DELETE RESTRICT,
+    channel_title VARCHAR(1024),
+    channel_link VARCHAR(1024),
+    channel_desc VARCHAR(2048),
+    channel_lang VARCHAR(10),
+    channel_last_build TIMESTAMP,
+    channel_ttl INTEGER,
+    channel_location INTEGER REFERENCES locations ON DELETE RESTRICT,
+    channel_wind INTEGER REFERENCES winds ON DELETE RESTRICT,
+    channel_atmosphere INTEGER REFERENCES atmospheres ON DELETE RESTRICT,
+    channel_astronomy INTEGER REFERENCES astronomy ON DELETE RESTRICT,
+    channel_image INTEGER REFERENCES images ON DELETE RESTRICT,
+    channel_item INTEGER REFERENCES items ON DELETE RESTRICT
+);
+
+CREATE TABLE queries (
+    query_id bigserial PRIMARY KEY,
+    query_count INTEGER,
+    query_created TIMESTAMP,
+    query_lang VARCHAR(10),
+    query_channel INTEGER REFERENCES channels ON DELETE RESTRICT
+);
+
+CREATE UNIQUE INDEX query_created_ui ON queries(query_created);

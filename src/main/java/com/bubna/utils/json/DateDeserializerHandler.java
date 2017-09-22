@@ -1,4 +1,4 @@
-package com.bubna.model.entity.json.utils;
+package com.bubna.utils.json;
 
 import com.bubna.utils.Handler;
 import org.apache.log4j.Logger;

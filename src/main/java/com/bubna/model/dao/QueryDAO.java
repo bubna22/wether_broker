@@ -1,7 +1,7 @@
-package com.bubna.dao;
+package com.bubna.model.dao;
 
 import com.bubna.model.entity.Query;
-import com.bubna.model.entity.json.utils.CustomJsonDateDeserializer;
+import com.bubna.utils.json.CustomJsonDateDeserializer;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,58 +9,46 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 public class QueryDAO implements DAO<Query> {
 
-    private HashMap<String, Object> input;
     @PersistenceContext
     @Autowired
     private EntityManager entityManager;
 
     private static final Logger logger = Logger.getLogger(CustomJsonDateDeserializer.class);
 
-    QueryDAO() {
-        input = new HashMap<>();
-    }
-
-    public void addInput(String key, Object val) {
-        input.put(key, val);
-    }
     @Transactional
-    public Query get() {
-        Query inputQuery = (Query) input.get("entity");
+    public Query get(Query entity) {
         javax.persistence.Query query = entityManager
                 .createQuery("SELECT q FROM Query q WHERE q.channel.location.city = :location_city", Query.class)
-                .setParameter("location_city", inputQuery.getChannel().getLocation().getCity());
+                .setParameter("location_city", entity.getChannel().getLocation().getCity());
         ArrayList<Query> result = (ArrayList<Query>) query.getResultList();
         if (result.size() < 1) logger.fatal("-------------------------no entities to display-------------------------\n");
         return result.get(0);
     }
 
     @Transactional
-    public void update() {
+    public void update(Query entity) {
         logger.warn("transaction started");
-        Query inputQuery = (Query) input.get("entity");
         logger.warn("select queries");
-        logger.warn("city: " + inputQuery.getChannel().getLocation().getCity());
+        logger.warn("city: " + entity.getChannel().getLocation().getCity());
         javax.persistence.Query query = entityManager
                 .createQuery("SELECT q FROM Query q WHERE q.channel.location.city = :location_city", Query.class)
-                .setParameter("location_city", inputQuery.getChannel().getLocation().getCity());
+                .setParameter("location_city", entity.getChannel().getLocation().getCity());
         logger.warn("get result from select");
         ArrayList<Query> result = (ArrayList<Query>) query.getResultList();
         if (result.size() < 1) {
             logger.warn("persist start");
-            entityManager.persist(inputQuery);
+            entityManager.persist(entity);
             logger.warn("persist end");
         } else {
             logger.warn("update start");
             Query outputQuery = result.get(0);
-            outputQuery.setChannel(inputQuery.getChannel());
-            outputQuery.setCount(inputQuery.getCount());
-            outputQuery.setCreated(inputQuery.getCreated());
-            outputQuery.setLang(inputQuery.getLang());
+            outputQuery.setChannel(entity.getChannel());
+            outputQuery.setCount(entity.getCount());
+            outputQuery.setCreated(entity.getCreated());
+            outputQuery.setLang(entity.getLang());
             logger.warn("update end");
         }
     }

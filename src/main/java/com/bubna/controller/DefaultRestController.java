@@ -1,6 +1,6 @@
 package com.bubna.controller;
 
-import com.bubna.model.Model;
+import com.bubna.model.dao.DAO;
 import com.bubna.model.entity.Channel;
 import com.bubna.model.entity.Location;
 import com.bubna.model.entity.Query;
@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class DefaultRestController {
 
     @Autowired
-    @Qualifier("queryModel")
-    private Model model;
+    @Qualifier("queryDAO")
+    private DAO<Query> dao;
 
     @RequestMapping(path = "/get/{town_name}", method = RequestMethod.GET)
     public Query update(@PathVariable(name = "town_name") String townName) {
@@ -26,6 +26,6 @@ public class DefaultRestController {
         location.setCity(townName.toLowerCase());
         channel.setLocation(location);
         inputQuery.setChannel(channel);
-        return (Query) model.get(inputQuery);
+        return dao.get(inputQuery);
     }
 }

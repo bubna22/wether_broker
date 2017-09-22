@@ -1,18 +1,17 @@
 package com.bubna.controller;
 
-import com.bubna.model.Model;
 import com.bubna.model.entity.json.JsonQuery;
-import com.bubna.spring.jms.WeatherQuerySender;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -20,18 +19,15 @@ import java.util.Arrays;
 public class DefaultController {
 
     @Autowired
-    private WeatherQuerySender weatherQuerySender;
-    @Autowired
     private RestTemplate restTemplate;
 
     @Autowired
-    @Qualifier("queryModel")
-    private Model queryModel;
+    private JmsTemplate jmsTemplate;
 
     private static final Logger logger = Logger.getLogger(DefaultController.class);
 
     @RequestMapping(path = "/update", method = RequestMethod.GET)
-    public String update(@RequestParam(name = "town_name") String townName) throws IOException {
+    public String update(@RequestParam(name = "townName") String townName, HttpServletRequest request) throws IOException {
         logger.debug("start download weather");
         ResponseEntity<JsonQuery> responseJsonQuery = restTemplate
                 .getForEntity("https://query.yahooapis.com/v1/public/yql?q=select * from weather.forecast where " +
@@ -39,8 +35,8 @@ public class DefaultController {
                         JsonQuery.class);
         logger.debug("end download weather; send data to jms");
         responseJsonQuery.getBody().getJsonResults().getChannel().getLocation().setCity(townName.toLowerCase());
-        weatherQuerySender.sendMessage(responseJsonQuery.getBody());
-        return "index";
+        jmsTemplate.convertAndSend("WEATHER.UPDATE.REQUEST", responseJsonQuery.getBody());
+        return "redirect: " + request.getContextPath() + "/index";
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
