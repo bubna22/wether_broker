@@ -6,6 +6,7 @@ import org.apache.activemq.command.ActiveMQMessage;
 import org.apache.activemq.command.ActiveMQTextMessage;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes = {WebConfig.class})
 @WebAppConfiguration
 @ActiveProfiles("test")
+@Ignore
 public class JmsTest {
 
     @Autowired
@@ -58,13 +60,13 @@ public class JmsTest {
     @JmsListener(destination = "test_sending")
     @Profile("test")
     public void testSendingTopicReceiveMsg(ActiveMQTextMessage msg) throws JMSException {
-        Assert.assertNotNull(msg);
+        Assert.assertEquals("hello world", msg.getText());
     }
 
     @JmsListener(destination = "test_receive")
     @Profile("test")
     public void testReceiveTopicReceiveMsg(ActiveMQTextMessage msg) throws JMSException {
-        Assert.assertNotNull(msg);
+        Assert.assertEquals("hello world", msg.getText());
         jmsTemplate.convertAndSend("test_sending", msg.getText());
     }
 

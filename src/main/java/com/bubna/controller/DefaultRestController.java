@@ -28,4 +28,8 @@ public class DefaultRestController {
         inputQuery.setChannel(channel);
         return dao.get(inputQuery);
     }
+
+    public void setDao(DAO<Query> dao) {
+        this.dao = dao;
+    }
 }

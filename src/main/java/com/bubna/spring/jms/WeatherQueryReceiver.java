@@ -38,4 +38,8 @@ public class WeatherQueryReceiver {
         outputQuery.setCount(inputQuery.getCount());
         dao.update(outputQuery);
     }
+
+    public void setDAO(DAO dao) {
+        this.dao = dao;
+    }
 }

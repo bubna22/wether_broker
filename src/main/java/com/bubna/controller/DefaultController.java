@@ -18,10 +18,7 @@ import java.util.Arrays;
 @Controller
 public class DefaultController {
 
-    @Autowired
     private RestTemplate restTemplate;
-
-    @Autowired
     private JmsTemplate jmsTemplate;
 
     private static final Logger logger = Logger.getLogger(DefaultController.class);
@@ -47,6 +44,16 @@ public class DefaultController {
                 + "; message - " + httpMessageNotReadableException.getMessage()
                 + "; stack trace - " + Arrays.toString(httpMessageNotReadableException.getStackTrace()));
         return jsonMappingException.getPath().get(0).getFieldName() + " invalid";
+    }
+
+    @Autowired
+    public void setJmsTemplate(JmsTemplate jmsTemplate) {
+        this.jmsTemplate = jmsTemplate;
+    }
+
+    @Autowired
+    public void setRestTemplate(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
     }
 
 }
